@@ -1,11 +1,16 @@
 import react, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Text, Image, useWindowDimensions } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import RenderHtml from 'react-native-render-html';
 
 export default function EmailScreen({ route }) {
     const { id } = route.params;
     const [email, setEmail] = useState([]);
-
+    const { width } = useWindowDimensions();
+    const source = {
+        html: email.body
+    };
+    
     useEffect(() => {
         async function getData() {
             const response = await fetch('https://mobile.ect.ufrn.br:3002/emails/' + id);
@@ -36,7 +41,10 @@ export default function EmailScreen({ route }) {
                 <Text>{email.time}</Text>
             </View>
             <View style={styles.body}>
-                <Text style={styles.textTitle}>{email.body}</Text>
+                <RenderHtml
+                    contentWidth={width}
+                    source={source}
+                />
             </View>
         </View>
     )
